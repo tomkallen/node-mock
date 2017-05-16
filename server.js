@@ -5,6 +5,9 @@ const server = express();
 const port = process.env.PORT || 4000;
 
 server.use("/restapi/", restapi);
+server.get("*", (res, req) => {
+    console.log(clc.red("Use /restapi/ path to reach mocks"))
+})
 
 server.listen(port);
 

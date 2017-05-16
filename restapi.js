@@ -14,14 +14,14 @@ Object.keys(rest).forEach(route => {
             rest[route] = Object.assign(rest[route], req.query);
         }
 
-        res.send(rest[route]);
+        res.json(rest[route]);
         console.log("Responding with ", rest[route]);
     });
 });
 
 router.get("*", (req, res) => {
     console.log(clc.yellow("\nNew request ", req.path));
-    cosole.log(clc.red("No such api path, check 'config.js'"));
+    console.log(clc.red("No such api path, check 'config.js'"));
 });
 
 module.exports = router;
