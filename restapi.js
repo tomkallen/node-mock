@@ -1,27 +1,40 @@
 const express = require("express");
 const router = express.Router();
 const clc = require("cli-color");
-
 const rest = require("./config");
+
+const cWarn = function(message){
+    console.log(clc.white.bgRed(message))
+}
+
+const cInfo = function(message){
+    console.log(clc.yellow(message))
+}
+
+const cLog = function(message){
+    console.log(message)
+}
 
 Object.keys(rest).forEach(route => {
     router.get(route, (req, res) => {
-        console.log(clc.yellow("\nNew request ", req.path));
+        console.time("request_length");
+        cInfo((new Date()));
+        const request = "New request " + req.path;
+        cInfo(request);
         if (Object.keys(req.query).length !== 0) {
-            console.log(clc.yellow("Received query parameters:"));
-            console.log(req.query);
-            console.log("appending query parameters to the response body");
-            rest[route] = Object.assign(rest[route], req.query);
-        }
+            cInfo("Received query parameters:");
+            cLog(req.query);
+            cLog("appending query parameters to the response body");
+            rest[route] = Object.assign(rest[route], req.query);        }
 
         res.json(rest[route]);
-        console.log("Responding with ", rest[route]);
+        cLog("Responding with ", rest[route]);
+        console.timeEnd("request_length");
     });
 });
 
 router.get("*", (req, res) => {
-    console.log(clc.yellow("\nNew request ", req.path));
-    console.log(clc.red("No such api path, check 'config.js'"));
+    cWarn("No such api path, check 'config.js'");
 });
 
 module.exports = router;
